@@ -1,0 +1,27 @@
+apply plugin: 'maven-publish'
+
+group = 'com.example.flutter'
+version = '1.0'
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifactId = 'flutter_release'
+            artifact 'com/example/flutter/flutter_release/1.0/flutter_release-1.0.aar'
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('name', 'Flutter Release Module')
+                root.appendNode('description', 'A prebuilt Flutter AAR module')
+            }
+        }
+    }
+    repositories {
+        maven {
+            url = uri("$buildDir/repo")  // This is fine as-is
+        }
+    }
+}
+
+task publishLocal(type: PublishToMavenLocal) {
+    dependsOn 'publish'
+}
